@@ -1,11 +1,264 @@
+
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Portfolio Admin</title><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="admin.css"><script src="../config.js"></script><script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script defer src="admin.js"></script></head>
-<body><main class="admin-wrap"><a href="../" class="back">← Public website</a><h1>Portfolio Admin</h1><p class="muted">Sign in to manage your portfolio content.</p>
-<section id="loginPanel" class="admin-card"><h2>Admin Login</h2><form id="loginForm"><label>Email<input id="email" type="email" required autocomplete="username" value="ashikuzzaman1453@gmail.com"></label><label>Password<input id="password" type="password" required autocomplete="current-password"></label><button class="button primary" type="submit">Sign in</button></form><p id="loginMessage" role="status"></p></section>
-<section id="editorPanel" hidden><div class="admin-toolbar"><span id="signedInAs"></span><button id="logout" class="button secondary">Sign out</button></div><div class="tabs"><button data-tab="site">Site</button><button data-tab="theme">Theme</button><button data-tab="sections">Sections</button><button data-tab="media">Media</button><button data-tab="backup">Backup</button></div>
-<div id="tab-site" class="admin-card tab-content"><h2>Site content</h2><label>Name<input id="siteName"></label><label>Professional title<input id="siteTitle"></label><label>Bio<textarea id="siteBio" rows="4"></textarea></label><label>Email<input id="siteEmail" type="email"></label><label>Phone<input id="sitePhone"></label><label>Location<input id="siteLocation"></label><label>Hero background CSS<input id="heroBackground" placeholder="linear-gradient(120deg,#d1fae5,#ecfdf5)"></label></div>
-<div id="tab-theme" class="admin-card tab-content" hidden><h2>Theme</h2><label>Primary colour<input id="primaryColor" type="color" value="#10b981"></label><label>Accent colour<input id="accentColor" type="color" value="#34d399"></label><p class="muted">Theme colours are saved as site content. The current public template uses CSS variables in style.css; use the colour controls to update the live theme in the next publish.</p></div>
-<div id="tab-sections" class="admin-card tab-content" hidden><h2>Sections</h2><p class="muted">Toggle visibility, change order, or edit section data in the JSON editor below.</p><div id="sectionList"></div><label>Content JSON<textarea id="contentJson" rows="22" spellcheck="false"></textarea></label><button id="formatJson" class="button secondary">Format JSON</button></div>
-<div id="tab-media" class="admin-card tab-content" hidden><h2>Media uploads</h2><p>Upload profile photo, project images or CV. Files are stored in the public <code>portfolio-media</code> bucket.</p><label>Choose file<input id="mediaFile" type="file" accept="image/*,.pdf"></label><label>Media type<select id="mediaType"><option value="profile">Profile photo</option><option value="project">Project image</option><option value="cv">CV PDF</option><option value="background">Hero background image</option></select></label><button id="uploadMedia" class="button primary">Upload file</button><p id="mediaResult" role="status"></p></div>
-<div id="tab-backup" class="admin-card tab-content" hidden><h2>Backup</h2><button id="exportJson" class="button secondary">Export JSON</button><label>Import JSON<input id="importJson" type="file" accept=".json,application/json"></label><button id="importButton" class="button secondary">Import selected JSON</button></div>
-<div class="savebar"><span id="saveStatus">No unsaved changes</span><button id="save" class="button primary">Save &amp; Publish</button></div></section></main></body></html><script src="../config.js"></script>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+
+  <title>Portfolio Admin</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="admin.css">
+
+  <!-- Supabase Configuration -->
+  <script src="../config.js"></script>
+
+  <!-- Supabase Library -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Admin JavaScript -->
+  <script defer src="admin.js"></script>
+</head>
+
+<body>
+
+  <main class="admin-wrap">
+
+    <a href="../" class="back">← Public website</a>
+
+    <h1>Portfolio Admin</h1>
+    <p class="muted">Sign in to manage your portfolio content.</p>
+
+    <!-- LOGIN PANEL -->
+    <section id="loginPanel" class="admin-card">
+
+      <h2>Admin Login</h2>
+
+      <form id="loginForm">
+
+        <label>
+          Email
+          <input
+            id="email"
+            type="email"
+            required
+            autocomplete="username"
+            value="ashikuzzaman1453@gmail.com"
+          >
+        </label>
+
+        <label>
+          Password
+          <input
+            id="password"
+            type="password"
+            required
+            autocomplete="current-password"
+          >
+        </label>
+
+        <button class="button primary" type="submit">
+          Sign in
+        </button>
+
+      </form>
+
+      <p id="loginMessage" role="status"></p>
+
+    </section>
+
+    <!-- EDITOR PANEL -->
+    <section id="editorPanel" hidden>
+
+      <!-- ADMIN TOOLBAR -->
+      <div class="admin-toolbar">
+
+        <span id="signedInAs"></span>
+
+        <button id="logout" class="button secondary" type="button">
+          Sign out
+        </button>
+
+      </div>
+
+      <!-- NAVIGATION TABS -->
+      <div class="tabs">
+
+        <button type="button" data-tab="site">Site</button>
+        <button type="button" data-tab="theme">Theme</button>
+        <button type="button" data-tab="sections">Sections</button>
+        <button type="button" data-tab="media">Media</button>
+        <button type="button" data-tab="backup">Backup</button>
+
+      </div>
+
+      <!-- SITE CONTENT -->
+      <div id="tab-site" class="admin-card tab-content">
+
+        <h2>Site Content</h2>
+
+        <label>
+          Name
+          <input id="siteName">
+        </label>
+
+        <label>
+          Professional Title
+          <input id="siteTitle">
+        </label>
+
+        <label>
+          Bio
+          <textarea id="siteBio" rows="4"></textarea>
+        </label>
+
+        <label>
+          Email
+          <input id="siteEmail" type="email">
+        </label>
+
+        <label>
+          Phone
+          <input id="sitePhone">
+        </label>
+
+        <label>
+          Location
+          <input id="siteLocation">
+        </label>
+
+        <label>
+          Hero Background CSS
+          <input
+            id="heroBackground"
+            placeholder="linear-gradient(120deg,#d1fae5,#ecfdf5)"
+          >
+        </label>
+
+      </div>
+
+      <!-- THEME SETTINGS -->
+      <div id="tab-theme" class="admin-card tab-content" hidden>
+
+        <h2>Theme</h2>
+
+        <label>
+          Primary Colour
+          <input id="primaryColor" type="color" value="#10b981">
+        </label>
+
+        <label>
+          Accent Colour
+          <input id="accentColor" type="color" value="#34d399">
+        </label>
+
+        <p class="muted">
+          Theme colours are saved as site content.
+          The current public template uses CSS variables in style.css.
+        </p>
+
+      </div>
+
+      <!-- SECTIONS -->
+      <div id="tab-sections" class="admin-card tab-content" hidden>
+
+        <h2>Sections</h2>
+
+        <p class="muted">
+          Toggle visibility, change order, or edit section data
+          in the JSON editor below.
+        </p>
+
+        <div id="sectionList"></div>
+
+        <label>
+          Content JSON
+          <textarea
+            id="contentJson"
+            rows="22"
+            spellcheck="false"
+          ></textarea>
+        </label>
+
+        <button id="formatJson" class="button secondary" type="button">
+          Format JSON
+        </button>
+
+      </div>
+
+      <!-- MEDIA UPLOADS -->
+      <div id="tab-media" class="admin-card tab-content" hidden>
+
+        <h2>Media Uploads</h2>
+
+        <p>
+          Upload profile photo, project images or CV.
+          Files are stored in the public portfolio-media bucket.
+        </p>
+
+        <label>
+          Choose File
+          <input id="mediaFile" type="file" accept="image/*,.pdf">
+        </label>
+
+        <label>
+          Media Type
+          <select id="mediaType">
+            <option value="profile">Profile photo</option>
+            <option value="project">Project image</option>
+            <option value="cv">CV PDF</option>
+            <option value="background">Hero background image</option>
+          </select>
+        </label>
+
+        <button id="uploadMedia" class="button primary" type="button">
+          Upload File
+        </button>
+
+        <p id="mediaResult" role="status"></p>
+
+      </div>
+
+      <!-- BACKUP -->
+      <div id="tab-backup" class="admin-card tab-content" hidden>
+
+        <h2>Backup</h2>
+
+        <button id="exportJson" class="button secondary" type="button">
+          Export JSON
+        </button>
+
+        <label>
+          Import JSON
+          <input
+            id="importJson"
+            type="file"
+            accept=".json,application/json"
+          >
+        </label>
+
+        <button id="importButton" class="button secondary" type="button">
+          Import Selected JSON
+        </button>
+
+      </div>
+
+      <!-- SAVE BAR -->
+      <div class="savebar">
+
+        <span id="saveStatus">No unsaved changes</span>
+
+        <button id="save" class="button primary" type="button">
+          Save &amp; Publish
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</body>
+</html>
