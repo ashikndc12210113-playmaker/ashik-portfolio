@@ -1,1 +1,0 @@
-Admin panel route: /admin/\nThe content JSON editor supports full portfolio JSON editing. Save & Publish writes the JSON to Supabase. Use the section visibility/order controls for basic section management.\n
